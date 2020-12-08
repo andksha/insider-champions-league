@@ -2,7 +2,7 @@
 
 namespace App\Contract;
 
-interface ApplicationException
+interface HttpException
 {
 
 }

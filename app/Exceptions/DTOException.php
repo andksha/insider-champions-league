@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use App\Contract\ApplicationException;
+use App\Contract\HttpException;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-final class DTOException extends Exception implements ApplicationException
+final class DTOException extends Exception implements HttpException
 {
     protected $code = JsonResponse::HTTP_UNPROCESSABLE_ENTITY;
 }
