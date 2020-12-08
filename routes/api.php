@@ -13,5 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('season', 'LeagueController@startSeason')->name('start-season');
+Route::post('next-week', 'LeagueController@nextWeek')->name('next-week');
 

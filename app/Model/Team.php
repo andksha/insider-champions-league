@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use App\DTO\StartSeasonDTO;
+use App\DTO\NextWeekDTO;
 use App\Exceptions\TeamsNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,11 +49,11 @@ final class Team extends Model
     }
 
     /**
-     * @param StartSeasonDTO $startSeasonDTO
+     * @param NextWeekDTO $startSeasonDTO
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      * @throws TeamsNotFoundException
      */
-    public static function getTeamsForNextWeek(StartSeasonDTO $startSeasonDTO)
+    public static function getTeamsForNextWeek(NextWeekDTO $startSeasonDTO)
     {
         $teams = Team::query()->whereIn('id', $startSeasonDTO->getTeamIds())->get();
 

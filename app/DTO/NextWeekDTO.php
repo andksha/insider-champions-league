@@ -4,7 +4,7 @@ namespace App\DTO;
 
 use App\Exceptions\DTOException;
 
-final class StartSeasonDTO
+final class NextWeekDTO
 {
     private array $teamIds;
 

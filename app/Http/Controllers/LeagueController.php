@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Contract\ApplicationException;
-use App\DTO\StartSeasonDTO;
-use App\Http\Requests\StartSeasonRequest;
+use App\Contract\HttpException;
+use App\DTO\NextWeekDTO;
+use App\Http\Requests\NextWeekRequest;
 use App\Model\Team;
-use App\UseCase\StartSeasonUseCase;
+use App\UseCase\NextWeekUseCase;
 use Illuminate\Http\Response;
 
 final class LeagueController extends Controller
@@ -18,12 +18,18 @@ final class LeagueController extends Controller
         return view('league_table')->with(['teams' => $teams]);
     }
 
-    public function startSeason(StartSeasonRequest $request, StartSeasonUseCase $startSeasonUseCase)
+    /**
+     * @param NextWeekRequest $request
+     * @param NextWeekUseCase $nextWeekUseCase
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
+     */
+    public function nextWeek(NextWeekRequest $request, NextWeekUseCase $nextWeekUseCase)
     {
         try {
-            $startSeasonDTO = new StartSeasonDTO($request->validated());
-            $responseData = $startSeasonUseCase->startSeason($startSeasonDTO);
-        } catch (ApplicationException $e) {
+            $startSeasonDTO = new NextWeekDTO($request->validated());
+            $responseData = $nextWeekUseCase->startSeason($startSeasonDTO);
+        } catch (HttpException $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
 

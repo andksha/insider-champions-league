@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 
-class StartSeasonRequest extends FormRequest
+class NextWeekRequest extends FormRequest
 {
     private JSONRequest $JSONRequest;
 
@@ -35,8 +35,8 @@ class StartSeasonRequest extends FormRequest
     public function rules()
     {
         return [
-            'teams' => ['required', 'array'],
-            'teams.*' => ['integer']
+            'team_ids' => ['required', 'array', 'size:4'],
+            'team_ids.*' => ['integer']
         ];
     }
 
