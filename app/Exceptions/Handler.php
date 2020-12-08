@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Contract\LoggableException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,6 +52,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof LoggableException) {
+            return response('Something went wrong', JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         return parent::render($request, $exception);
     }
 }
