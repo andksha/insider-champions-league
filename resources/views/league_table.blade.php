@@ -72,7 +72,7 @@
                     <input type="submit" value="Play All"/>
                 </div>
                 <div class="col-md-2 offset-md-8">
-                    <input type="submit" id="start-season" value="Start Season"/>
+                    <input type="submit" id="next-week" value="Next Week"/>
                 </div>
             </div>
         </div>

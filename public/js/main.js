@@ -7,7 +7,7 @@ function start() {
   enableSelector(teamSelectorOpener, teamSelector);
   enableCheckboxes();
   enableSubmit(teamSelectorOpener, teamSelector);
-  enableStartSeason();
+  enableNextWeek();
 }
 
 function enableSelector(teamSelectorOpener, teamSelector) {
@@ -52,18 +52,18 @@ function enableSubmit(teamSelectorOpener, teamSelector) {
   });
 }
 
-function enableStartSeason() {
-  let data = { 'teams': [1, 2, 3, 4] };
+function enableNextWeek() {
+  let data = { 'team_ids': [1, 2, 3, 4] };
 
-  $('#start-season').click(function () {
+  $('#next-week').click(function () {
     // $('.team-checkbox:checkbox:checked').each(function () {
-    //   data.teams.push($(this).attr('id'));
+    //   data.team_ids.push($(this).attr('id'));
     // });
 
-    if (data.teams.length !== 4) {
-      alert('Choose and submit 4 teams');
-      return;
-    }
+    // if (data.team_ids.length !== 4) {
+    //   alert('Choose and submit 4 teams');
+    //   return;
+    // }
 
     $.ajax({
       type: 'POST',
@@ -78,8 +78,12 @@ function enableStartSeason() {
 
       error: function (errorData) {
         let response = errorData['responseJSON'] ? errorData['responseJSON'] : null;
-        console.log(errorData['responseJSON']);
         let errors = [];
+
+        if (typeof response === 'string' || response instanceof String) {
+          console.log(response);
+          return;
+        }
 
         for (const [key, value] of Object.entries(response)) {
           let error = value[0] ?? '';
