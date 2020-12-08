@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contract\ApplicationException;
+use App\DTO\StartSeasonDTO;
 use App\Http\Requests\StartSeasonRequest;
 use App\Model\Team;
 use App\UseCase\StartSeasonUseCase;
@@ -20,7 +21,8 @@ final class LeagueController extends Controller
     public function startSeason(StartSeasonRequest $request, StartSeasonUseCase $startSeasonUseCase)
     {
         try {
-            $responseData = $startSeasonUseCase->startSeason($request->validated());
+            $startSeasonDTO = new StartSeasonDTO($request->validated());
+            $responseData = $startSeasonUseCase->startSeason($startSeasonDTO);
         } catch (ApplicationException $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
