@@ -1,0 +1,48 @@
+
+html, body {
+    background-color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 300;
+    height: 100vh;
+    margin: 0;
+}
+
+.response-error {
+    display: none;
+    margin: auto;
+    width: 40%;
+    text-align: center;
+}
+
+.title {
+    color: #636b6f;
+    font-size: 28px;
+    text-align: center;
+    display: inline-block;
+}
+
+#team-selector {
+    display: none;
+}
+
+input {
+    margin-left: 5px;
+}
+
+.team-name, .team-power {
+    font-weight: bold;
+}
+
+.team-power {
+    color: #6f42c1;
+}
+
+
+.league-table {
+
+}
+
+.table-header {
+    text-align: center;
+    font-weight: bold;
+}
