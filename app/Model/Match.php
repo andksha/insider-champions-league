@@ -2,12 +2,14 @@
 
 namespace App\Model;
 
+use App\Exceptions\InvalidOperationException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Model\Match
  *
  * @property int $id
+ * @property int $season_id
  * @property int $host_id
  * @property int $host_goals
  * @property int $guest_id
@@ -24,9 +26,73 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Match whereHostId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Match whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Match whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 final class Match extends Model
 {
     protected $table = 'matches';
+
+    public function setSeasonId(int $seasonId): Match
+    {
+        $this->season_id = $seasonId;
+
+        return $this;
+    }
+
+    /**
+     * @param Team $hostTeam
+     * @param Team $guestTeam
+     * @return bool
+     * @throws InvalidOperationException
+     */
+    public function play(Team $hostTeam, Team $guestTeam)
+    {
+        if (!$this->season_id) {
+            throw new InvalidOperationException('Season id must be set');
+        }
+
+        $this->host_id = $hostTeam->id;
+        $this->guest_id = $guestTeam->id;
+        $overtime = mt_rand(0, 10);
+        $goalBalance = $this->calculateGoalBalance($hostTeam, $guestTeam);
+
+        for ($i = 0; $i < (90 + $overtime); $i++) {
+            if (!$this->calculateScoringProbability()) {
+                continue;
+            }
+
+            if ($this->getScoringNumber() < $goalBalance) {
+                $this->host_goals++;
+                $goalBalance--;
+            } else {
+                $this->guest_goals++;
+                $goalBalance++;
+            }
+        }
+
+        return $this->save();
+    }
+
+    private function calculateScoringProbability(): bool
+    {
+        $rand = mt_rand(0, 40);
+
+        return ($rand === 3 || $rand === 13); // a goal will be in 2/41 cases
+    }
+
+    private function getScoringNumber(): int
+    {
+        return mt_rand(0, 100);
+    }
+
+    private function calculateGoalBalance(Team $hostTeam, Team $guestTeam)
+    {
+        $startingBalance = 60; // advantage for hosting team
+
+        $balance = $startingBalance
+            + $hostTeam->attackDefenseDiff($guestTeam)
+            + $hostTeam->defenseAttackDiff($guestTeam)
+            + $hostTeam->middleDiff($guestTeam);
+
+        return $balance;
+    }
 }
