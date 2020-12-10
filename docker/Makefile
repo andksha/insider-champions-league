@@ -23,14 +23,22 @@ init:
 	docker-compose exec insider_phpfpm usermod -aG sudo www-data
 	docker-compose exec insider_phpfpm chown -R www-data:www-data storage bootstrap/cache
 	docker-compose exec insider_phpfpm chgrp -R www-data storage bootstrap/cache
-	docker-compose exec insider_phpfpm chmod -R ug+rwx storage bootstrap/cache
+	docker-compose exec insider_phpfpm chmod -R 755 storage/logs
+
+permissions:
+    docker-compose exec insider_phpfpm php artisan route:clear
+    docker-compose exec insider_phpfpm php artisan config:clear
+    docker-compose exec insider_phpfpm php artisan cache:clear
+	docker-compose exec insider_phpfpm usermod -aG sudo www-data
+	docker-compose exec insider_phpfpm chown -R www-data:www-data storage bootstrap/cache
+	docker-compose exec insider_phpfpm chgrp -R www-data storage bootstrap/cache
 	docker-compose exec insider_phpfpm chmod -R 755 storage/logs
 
 refresh:
-	docker-compose exec insider_phpfpm chmod -R 755 /application/logs/
+	docker-compose exec insider_phpfpm chmod -R 755 /application1/logs/
 
 update:
-	docker-compose exec insider_phpfpm chmod -R 755 /application/logs/
+	docker-compose exec insider_phpfpm chmod -R 755 /application1/logs/
 
 supervisor_start:
 	docker-compose exec insider_queue service supervisor stop
