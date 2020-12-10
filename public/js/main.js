@@ -46,24 +46,30 @@ function enableSubmit(teamSelectorOpener, teamSelector) {
     let j = 0;
 
     $(selectedTeams).each(function () {
-      $('.team-' + j).html($(this).next().html());
+      let selector = '.team-' + j;
+      $(selector).html($(this).next().html());
+      $(selector).attr('id', 'season-team-' + $(this).attr('id'));
       j++;
     });
   });
 }
 
 function enableNextWeek() {
-  let data = { 'team_ids': [1, 2, 3, 4] };
+  let data = { 'team_ids': [] };
+  let firstMatchPlayed = false;
+  let weeksPlayed = 0;
 
   $('#next-week').click(function () {
-    // $('.team-checkbox:checkbox:checked').each(function () {
-    //   data.team_ids.push($(this).attr('id'));
-    // });
+    if (data.team_ids.length !== 4) {
+      $('.team-checkbox:checkbox:checked').each(function () {
+        data.team_ids.push($(this).attr('id'));
+      });
+    }
 
-    // if (data.team_ids.length !== 4) {
-    //   alert('Choose and submit 4 teams');
-    //   return;
-    // }
+    if (!firstMatchPlayed && data.team_ids.length !== 4) {
+      alert('Choose and submit 4 teams');
+      return;
+    }
 
     $.ajax({
       type: 'POST',
@@ -74,13 +80,38 @@ function enableNextWeek() {
 
       success: function (data) {
         let i = 0;
-        for (const [key, match] of Object.entries(data)) {
+
+        for (const [key, match] of Object.entries(data.matches ?? null)) {
           let matchResultSelector = '.match-result-' + i++;
-          let result = match.host_goals ?? 0 + ' - ' + match.guest_goals ?? 0;
-          console.log(match);
+          let result = (match.host_goals ?? 0) + ' - ' + (match.guest_goals ?? 0);
+
           $(matchResultSelector).find('.host-name').html(match.host_name ?? '');
           $(matchResultSelector).find('.result').html(result);
           $(matchResultSelector).find('.guest-name').html(match.guest_name ?? '');
+        }
+
+        for (const [key, team] of Object.entries(data.teams ?? null)) {
+          let teamResultSelector = '#season-team-' + team.id;
+
+          $('.team-' + key).first().html(team.name ?? '');
+          $(teamResultSelector).closest('.row').find('.PTS').first().html(team.pts ?? 0);
+          $(teamResultSelector).closest('.row').find('.Plays').first().html(team.plays ?? 0);
+          $(teamResultSelector).closest('.row').find('.Wins').first().html(team.wins ?? 0);
+          $(teamResultSelector).closest('.row').find('.Draws').first().html(team.draws ?? 0);
+          $(teamResultSelector).closest('.row').find('.Loses').first().html(team.loses ?? 0);
+          $(teamResultSelector).closest('.row').find('.GoalDifference').first().html(team.goal_difference ?? 0);
+        }
+
+        for (const [key, prediction] of Object.entries(data.predictions ?? null)) {
+          $('#prediction-' + key).find('.prediction-team-name').first().html(prediction.name + ":&nbsp");
+          $('#prediction-' + key).find('.team-prediction').first().html('%' + prediction.prediction);
+        }
+
+        firstMatchPlayed = true;
+        weeksPlayed++;
+
+        if (weeksPlayed <= 6) {
+          $('#week-number').html(weeksPlayed);
         }
       },
 

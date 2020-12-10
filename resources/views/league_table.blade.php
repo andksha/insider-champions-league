@@ -48,6 +48,7 @@
                 <div class="col-md-1">D</div>
                 <div class="col-md-1">L</div>
                 <div class="col-md-1">GD</div>
+                <div class="col-md-4 text-center"><span id="week-number"></span> Week Match Result</div>
             </div>
             <hr/>
             <div class="teams">
@@ -56,15 +57,15 @@
                         <div class="col-md-2">
                             <span class="selected-team team-{{ $j }}"></span>
                         </div>
-                        <div class="col-md-1">0</div>
-                        <div class="col-md-1">0</div>
-                        <div class="col-md-1">0</div>
-                        <div class="col-md-1">0</div>
-                        <div class="col-md-1">0</div>
-                        <div class="col-md-1">0</div>
+                        <div class="col-md-1 PTS">0</div>
+                        <div class="col-md-1 Plays">0</div>
+                        <div class="col-md-1 Wins">0</div>
+                        <div class="col-md-1 Draws">0</div>
+                        <div class="col-md-1 Loses">0</div>
+                        <div class="col-md-1 GoalDifference">0</div>
                         @if ($j < 2)
                             <div class="col-md-4 match-result-{{ $j }}">
-                                <span class="host-name match-span "></span>
+                                <span class="host-name match-span"></span>
                                 <span class="result match-span"></span>
                                 <span class="guest-name match-span"></span>
                             </div>
@@ -74,17 +75,20 @@
             </div>
             <hr/>
             <div class="row">
-                <div class="col-md-2">
-                    <input type="submit" value="Play All"/>
-                </div>
-                <div class="col-md-2 offset-md-8">
+                <div class="col-md-2 offset-md-10">
                     <input type="submit" id="next-week" value="Next Week"/>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2 predictions">
         Predictions
+        @foreach(range(0, 3) as $k)
+        <div class="row" id="prediction-{{ $k }}">
+            <span class="prediction-team-name"></span>
+            <span class="team-prediction"></span>
+        </div>
+        @endforeach
     </div>
 </div>
 @endsection

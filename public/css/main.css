@@ -65,3 +65,17 @@ input {
     width: 40%;
     text-align: end;
 }
+
+.predictions {
+    font-weight: bold;
+}
+
+.prediction-team-name {
+    display: inline-block;
+    float: left;
+}
+
+.team-prediction {
+    display: inline-block;
+    float: right;
+}
