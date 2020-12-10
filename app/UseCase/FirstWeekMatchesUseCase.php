@@ -23,6 +23,7 @@ final class FirstWeekMatchesUseCase
     public function play(Season $season): WeekResult
     {
         $teams = $season->teams;
+        $weekResult = new WeekResult();
 
         if (!$teams || empty($teams)) {
             throw new InvalidOperationException('Failed to get teams from DB');
@@ -36,6 +37,6 @@ final class FirstWeekMatchesUseCase
         $guestTeam2 = $teams->pop();
         $match2 = $this->playMatchUseCase->playMatch($season->id, $hostTeam2, $guestTeam2);
 
-        return new WeekResult($match1, $match2);
+        return $weekResult->setMatch1($match1)->setMatch2($match2);
     }
 }
