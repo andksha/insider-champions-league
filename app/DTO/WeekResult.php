@@ -3,23 +3,31 @@
 namespace App\DTO;
 
 use App\Model\Match;
+use Illuminate\Database\Eloquent\Collection;
 
 final class WeekResult
 {
-    private Match $match1;
-    private Match $match2;
-    private ?array $predictions;
+    private array $matches = [];
+    private ?array $predictions = [];
+    private ?Collection $teams = null;
 
-    public function setMatch1(Match $match1): WeekResult
+    public function addMatch(Match $match): WeekResult
     {
-        $this->match1 = $match1;
+        $key = 'match' . (count($this->matches) + 1);
+
+        $this->matches[$key] = [
+            'host_name'   => $match->host->name ?? '',
+            'host_goals'  => $match->host_goals ?? 0,
+            'guest_name'  => $match->guest->name ?? '',
+            'guest_goals' => $match->guest_goals ?? 0
+        ];
 
         return $this;
     }
 
-    public function setMatch2(Match $match2): WeekResult
+    public function setTeams(Collection $teams): WeekResult
     {
-        $this->match2 = $match2;
+        $this->teams = $teams;
 
         return $this;
     }
@@ -33,20 +41,14 @@ final class WeekResult
 
     public function toArray(): array
     {
+        $teams = $this->teams ? $this->teams->sortByDesc(function ($a, $b) {
+            return ($a->pts ?? 0) <=> ($b->pts ?? 0);
+        })->toArray() : [];
+
         return [
-            'match1' => [
-                'host_name'   => $this->match1->host->name ?? '',
-                'host_goals'  => $this->match1->host_goals ?? 0,
-                'guest_name'  => $this->match1->guest->name ?? '',
-                'guest_goals' => $this->match1->guest_goals ?? 0
-            ],
-            'match2' => [
-                'host_name'   => $this->match2->host->name ?? '',
-                'host_goals'  => $this->match2->host_goals ?? 0,
-                'guest_name'  => $this->match2->guest->name ?? '',
-                'guest_goals' => $this->match2->guest_goals ?? 0
-            ],
-            'predictions' => $this->predictions,
+            'matches' => $this->matches,
+            'teams' => $teams,
+            'predictions' => $this->predictions
         ];
     }
 }

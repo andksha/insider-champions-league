@@ -64,8 +64,14 @@ final class Match extends Model
             throw new InvalidOperationException('Season id must be set');
         }
 
+        if ((int) $hostTeam->id === (int) $guestTeam->id) {
+            throw new InvalidOperationException('Team can not play with itself');
+        }
+
         $this->host_id = $hostTeam->id;
         $this->guest_id = $guestTeam->id;
+        $this->host_goals = 0;
+        $this->guest_goals = 0;
         $overtime = mt_rand(0, 10);
         $goalBalance = $this->calculateGoalBalance($hostTeam, $guestTeam);
 
@@ -84,6 +90,8 @@ final class Match extends Model
         }
 
         $this->save();
+        $this->host = $hostTeam->updateMatchResults($this->host_goals, $this->guest_goals);
+        $this->guest = $guestTeam->updateMatchResults($this->guest_goals, $this->host_goals);
 
         return $this;
     }

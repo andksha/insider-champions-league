@@ -31,12 +31,14 @@ final class FirstWeekMatchesUseCase
 
         $hostTeam1 = $teams->pop();
         $guestTeam1 = $teams->shift();
-        $match1 =$this->playMatchUseCase->playMatch($season->id, $hostTeam1, $guestTeam1);
+        $match1 =$this->playMatchUseCase->setSeasonId($season->id)->playMatch($hostTeam1, $guestTeam1);
 
         $hostTeam2 = $teams->shift();
         $guestTeam2 = $teams->pop();
-        $match2 = $this->playMatchUseCase->playMatch($season->id, $hostTeam2, $guestTeam2);
+        $match2 = $this->playMatchUseCase->setSeasonId($season->id)->playMatch($hostTeam2, $guestTeam2);
 
-        return $weekResult->setMatch1($match1)->setMatch2($match2);
+        $season->load('teams');
+
+        return $weekResult->setTeams($season->teams)->addMatch($match1)->addMatch($match2);
     }
 }

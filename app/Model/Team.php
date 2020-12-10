@@ -16,6 +16,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property int $middle
  * @property int $defense
  * @property int $overall
+ * @property int $pts
+ * @property int $plays
+ * @property int $wins
+ * @property int $draws
+ * @property int $loses
+ * @property int $goal_difference
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Team newModelQuery()
@@ -29,6 +35,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereOverall($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereDraws($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereGoalDifference($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereLoses($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team wherePlays($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team wherePts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereWins($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Model\Season[] $season
  * @property-read int|null $season_count
  */
@@ -54,6 +66,25 @@ final class Team extends Model
     public function season(): BelongsToMany
     {
         return $this->belongsToMany(Season::class, 'seasons_teams', 'team_id', 'season_id');
+    }
+
+    public function updateMatchResults(int $teamGoals, int $otherTeamGoals): Team
+    {
+        if ($teamGoals > $otherTeamGoals) {
+            $this->pts += 3;
+            $this->wins++;
+        } elseif ($teamGoals === $otherTeamGoals) {
+            $this->pts += 1;
+            $this->draws++;
+        } else {
+            $this->loses++;
+        }
+
+        $this->goal_difference += ($teamGoals - $otherTeamGoals);
+        $this->plays++;
+        $this->save();
+
+        return $this;
     }
 
     /**

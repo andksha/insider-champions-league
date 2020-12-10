@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Contract\HttpException;
 use App\DTO\NextWeekDTO;
 use App\Http\Requests\NextWeekRequest;
-use App\Model\Match;
 use App\Model\Team;
 use App\UseCase\NextWeekUseCase;
 use Illuminate\Http\Response;
@@ -14,7 +13,7 @@ final class LeagueController extends Controller
 {
     public function leagueTable()
     {
-        $teams = Team::all();
+        $teams = Team::query()->orderBy('name')->get();
 
         return view('league_table')->with(['teams' => $teams]);
     }
@@ -33,8 +32,6 @@ final class LeagueController extends Controller
         } catch (HttpException $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
-
-        Match::query()->delete();
 
         return response()->json($weekResult->toArray(), Response::HTTP_CREATED);
     }

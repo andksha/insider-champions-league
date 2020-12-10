@@ -56,7 +56,7 @@ final class Season extends Model
     public static function getOrCreate(Collection $teams)
     {
         /** find season without winner */
-        if (!$season = Season::query()->whereNull('winner_id')->first()) {
+        if (!$season = Season::query()->whereNull('winner_id')->with(self::DEFAULT_RELATIONS)->first()) {
             /** create new season */
             $season = Season::query()->create();
 
@@ -69,6 +69,31 @@ final class Season extends Model
             }, $teams->pluck('id')->toArray()));
         };
 
-        return $season->load(self::DEFAULT_RELATIONS);
+        return $season;
     }
+
+    public function getPredictions()
+    {
+        $teams = $this->teams->sortByDesc(function ($team) {
+            return $team->pts;
+        });
+        $predictions = [];
+
+        /** @var Team $team */
+        foreach ($teams as $team) {
+            $predictions[] = [
+                'name' => $team->name,
+                'prediction' => (int) (
+                    (($team->wins * 10) + ($team->draws * 2) - ($team->loses * 5) - (($team->pts - $teams->max('pts')) * 2))
+                )
+            ];
+        }
+
+        return $predictions;
+    }
+
+//    public function maxMatchesPlayed(): bool
+//    {
+//        return $this->matches_count <= self::TOTAL_MATCHES;
+//    }
 }
