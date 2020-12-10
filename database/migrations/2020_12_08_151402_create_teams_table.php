@@ -21,6 +21,12 @@ class CreateTeamsTable extends Migration
             $table->integer('middle');
             $table->integer('defense');
             $table->integer('overall');
+            $table->integer('pts')->default(0);
+            $table->integer('plays')->default(0);
+            $table->integer('wins')->default(0);
+            $table->integer('draws')->default(0);
+            $table->integer('loses')->default(0);
+            $table->integer('goal_difference')->default(0);
 
             $table->timestamps();
         });

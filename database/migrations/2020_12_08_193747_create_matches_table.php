@@ -18,8 +18,8 @@ class CreateMatchesTable extends Migration
 
             $table->integer('season_id');
             $table->unsignedInteger('host_id');
-            $table->integer('host_goals')->default(0);
             $table->unsignedInteger('guest_id');
+            $table->integer('host_goals')->default(0);
             $table->integer('guest_goals')->default(0);
 
             $table->timestamps();
