@@ -46,3 +46,22 @@ input {
     text-align: center;
     font-weight: bold;
 }
+
+.match-span {
+    display: inline-block;
+}
+
+.host-name {
+    width: 35%;
+    text-align: start;
+}
+
+.result {
+    width: 20%;
+    text-align: center;
+}
+
+.guest-name {
+    width: 40%;
+    text-align: end;
+}

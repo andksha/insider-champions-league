@@ -2,7 +2,6 @@
 
 @section('content')
 {{--  Team selection  --}}
-
 <div class="row">
     <h4>Choose 4 teams to participate in league: </h4>
     <input type="button" id="team-selector-opener" value="Open selector"/>
@@ -63,6 +62,13 @@
                         <div class="col-md-1">0</div>
                         <div class="col-md-1">0</div>
                         <div class="col-md-1">0</div>
+                        @if ($j < 2)
+                            <div class="col-md-4 match-result-{{ $j }}">
+                                <span class="host-name match-span "></span>
+                                <span class="result match-span"></span>
+                                <span class="guest-name match-span"></span>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>

@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Exceptions\InvalidOperationException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Model\Match
@@ -26,6 +27,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Match whereHostId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Match whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Match whereUpdatedAt($value)
+ * @property-read \App\Model\Team|null $guest
+ * @property-read \App\Model\Team|null $host
+ * @method static \Illuminate\Database\Eloquent\Builder|Match whereSeasonId($value)
  */
 final class Match extends Model
 {
@@ -38,13 +42,23 @@ final class Match extends Model
         return $this;
     }
 
+    public function host(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'host_id');
+    }
+
+    public function guest(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'guest_id');
+    }
+
     /**
      * @param Team $hostTeam
      * @param Team $guestTeam
-     * @return bool
+     * @return Match
      * @throws InvalidOperationException
      */
-    public function play(Team $hostTeam, Team $guestTeam)
+    public function play(Team $hostTeam, Team $guestTeam): Match
     {
         if (!$this->season_id) {
             throw new InvalidOperationException('Season id must be set');
@@ -69,7 +83,9 @@ final class Match extends Model
             }
         }
 
-        return $this->save();
+        $this->save();
+
+        return $this;
     }
 
     private function calculateScoringProbability(): bool

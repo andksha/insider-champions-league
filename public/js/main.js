@@ -73,7 +73,15 @@ function enableNextWeek() {
       dataType: 'json',
 
       success: function (data) {
-        console.log(data);
+        let i = 0;
+        for (const [key, match] of Object.entries(data)) {
+          let matchResultSelector = '.match-result-' + i++;
+          let result = match.host_goals ?? 0 + ' - ' + match.guest_goals ?? 0;
+          console.log(match);
+          $(matchResultSelector).find('.host-name').html(match.host_name ?? '');
+          $(matchResultSelector).find('.result').html(result);
+          $(matchResultSelector).find('.guest-name').html(match.guest_name ?? '');
+        }
       },
 
       error: function (errorData) {

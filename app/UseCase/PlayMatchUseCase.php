@@ -11,10 +11,10 @@ final class PlayMatchUseCase
      * @param int $seasonId
      * @param Team $hostTeam
      * @param Team $guestTeam
-     * @return bool
+     * @return Match
      * @throws \App\Exceptions\InvalidOperationException
      */
-    public function playMatch(int $seasonId, Team $hostTeam, Team $guestTeam): bool
+    public function playMatch(int $seasonId, Team $hostTeam, Team $guestTeam): Match
     {
         $match = new Match();
 

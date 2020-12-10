@@ -3,6 +3,7 @@
 namespace App\DTO;
 
 use App\Exceptions\DTOException;
+use App\Model\Season;
 
 final class NextWeekDTO
 {
@@ -15,8 +16,8 @@ final class NextWeekDTO
      */
     public function __construct($input)
     {
-        if (!isset($input['team_ids']) || count($input['team_ids']) !== 4) {
-            throw new DTOException('4 teams should be selected');
+        if (!isset($input['team_ids']) || count($input['team_ids']) !== Season::TEAMS_IN_SEASON) {
+            throw new DTOException(Season::TEAMS_IN_SEASON . ' teams should be selected');
         }
 
         $this->teamIds = $input['team_ids'];

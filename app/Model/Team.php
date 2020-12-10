@@ -5,6 +5,7 @@ namespace App\Model;
 use App\DTO\NextWeekDTO;
 use App\Exceptions\TeamsNotFoundException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * App\Model\Team
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereOverall($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Model\Season[] $season
+ * @property-read int|null $season_count
  */
 final class Team extends Model
 {
@@ -48,18 +51,23 @@ final class Team extends Model
         return $this->middle - $otherTeam->middle;
     }
 
+    public function season(): BelongsToMany
+    {
+        return $this->belongsToMany(Season::class, 'seasons_teams', 'team_id', 'season_id');
+    }
+
     /**
-     * @param NextWeekDTO $startSeasonDTO
+     * @param NextWeekDTO $nextWeekDTO
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      * @throws TeamsNotFoundException
      */
-    public static function getTeamsForNextWeek(NextWeekDTO $startSeasonDTO)
+    public static function getTeamsForNextWeek(NextWeekDTO $nextWeekDTO)
     {
-        $teams = Team::query()->whereIn('id', $startSeasonDTO->getTeamIds())->get();
+        $teams = Team::query()->whereIn('id', $nextWeekDTO->getTeamIds())->get();
 
         if ($teams->count() !== 4) {
             $foundIds = $teams->pluck('id')->toArray();
-            throw new TeamsNotFoundException(array_diff($startSeasonDTO->getTeamIds(), $foundIds));
+            throw new TeamsNotFoundException(array_diff($nextWeekDTO->getTeamIds(), $foundIds));
         }
 
         return $teams;
