@@ -16,7 +16,7 @@ class CreateSeasonsTable extends Migration
         Schema::create('seasons', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('winner_id')->nullable();
+            $table->unsignedInteger('winner_id')->nullable();
             $table->integer('matches_number')->nullable();
 
             $table->timestamps();
